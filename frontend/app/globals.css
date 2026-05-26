@@ -9,9 +9,10 @@
 body {
   @apply bg-app font-body text-slate-100 antialiased;
   background-image:
-    radial-gradient(circle at top left, rgba(132, 108, 255, 0.18), transparent 24%),
-    radial-gradient(circle at top right, rgba(255, 185, 84, 0.08), transparent 18%),
-    linear-gradient(180deg, #171614 0%, #11110f 100%);
+    radial-gradient(circle at top left, rgba(240, 177, 103, 0.16), transparent 24%),
+    radial-gradient(circle at top right, rgba(130, 151, 116, 0.1), transparent 20%),
+    linear-gradient(180deg, #17120f 0%, #110d0a 100%);
+  min-height: 100vh;
 }
 
 a {
@@ -19,5 +20,23 @@ a {
 }
 
 ::selection {
-  background: rgba(132, 108, 255, 0.32);
+  background: rgba(240, 177, 103, 0.32);
+}
+
+* {
+  scrollbar-color: rgba(240, 177, 103, 0.35) rgba(255, 255, 255, 0.04);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(240, 177, 103, 0.25);
+  border-radius: 999px;
 }
