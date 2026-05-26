@@ -21,15 +21,15 @@ export function SearchBar({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-3 rounded-[20px] border border-white/10 bg-panel p-4 shadow-panel">
-      <Search className="h-5 w-5 text-slate-500" />
+    <form onSubmit={handleSubmit} className="flex items-center gap-3 rounded-[24px] border border-white/8 bg-[#1d1712] p-4 shadow-panel">
+      <Search className="h-5 w-5 text-stone-500" />
       <Input
         value={query}
         onChange={(event) => setQuery(event.target.value)}
         placeholder="Search across your videos with natural language..."
-        className="h-12 border border-white/10 bg-[#32312d] shadow-none focus:ring-0"
+        className="h-12 border-0 bg-[#28211c] shadow-none focus:ring-0"
       />
-      <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-[#32312d] px-3 py-2 text-sm text-slate-400">
+      <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-[#28211c] px-3 py-2 text-sm text-stone-400 sm:flex">
         <Command className="h-4 w-4" />
         K
       </div>
