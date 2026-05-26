@@ -29,14 +29,14 @@ export function QAPanel({ videoId, token }: { videoId: string; token: string }) 
     <div className="space-y-4 rounded-[24px] border border-white/8 bg-panel p-6 shadow-panel">
       <div>
         <h3 className="font-display text-2xl font-semibold text-white">Ask This Video</h3>
-        <p className="text-sm text-slate-400">Answers stream token by token from Claude using transcript-grounded context.</p>
+        <p className="text-sm text-stone-400">Answers stream from transcript-grounded context so the response stays tied to the uploaded material.</p>
       </div>
       <form onSubmit={handleSubmit} className="flex gap-3">
         <Input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="What are the key takeaways?" />
         <Button disabled={isPending || question.trim().length < 2}>{isPending ? "Thinking..." : "Ask"}</Button>
       </form>
-      <div className="min-h-32 rounded-2xl border border-white/8 bg-[#1d1c19] p-4 text-sm leading-7 text-slate-300">
-        {error ? <span className="text-[#ffb6b6]">{error}</span> : answer || "Your streamed answer will appear here."}
+      <div className="min-h-32 rounded-2xl border border-white/8 bg-[#181411] p-4 text-sm leading-7 text-stone-300">
+        {error ? <span className="text-[#f2b7ac]">{error}</span> : answer || "Your streamed answer will appear here."}
       </div>
     </div>
   );
