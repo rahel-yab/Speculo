@@ -10,14 +10,14 @@ const config: Config = {
     extend: {
       colors: {
         ink: "#f5f5f4",
-        panel: "#2b2a27",
-        app: "#151412",
-        accent: "#8b7dff",
-        "accent-soft": "#ece9ff",
-        muted: "#3a3935",
-        gold: "#d28a1d",
-        sage: "#79a72b",
-        coral: "#e76c39"
+        panel: "#1d1713",
+        app: "#120e0b",
+        accent: "#f0b167",
+        "accent-soft": "#f7e3c2",
+        muted: "#302721",
+        gold: "#d89a42",
+        sage: "#8ca873",
+        coral: "#dc7a58"
       },
       backgroundImage: {
         "hero-grid":
