@@ -57,9 +57,9 @@ export function ProgressTracker({
   }, [progress]);
 
   return (
-    <div className="space-y-5 rounded-[24px] border border-white/8 bg-panel p-6 shadow-panel">
+    <div className="space-y-5 rounded-[28px] border border-white/8 bg-panel p-6 shadow-panel">
       <div className="space-y-2">
-        <div className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">Pipeline Progress</div>
+        <div className="text-sm font-semibold uppercase tracking-[0.22em] text-stone-500">Pipeline progress</div>
         <div className="text-2xl font-semibold text-white">{progress.message}</div>
       </div>
       <Progress value={progress.percent} />
@@ -75,8 +75,8 @@ export function ProgressTracker({
               className={cn(
                 "rounded-2xl border px-4 py-3 text-sm font-semibold transition",
                 active && "border-accent/40 bg-accent/10 text-white",
-                !active && completed && "border-white/10 bg-white/6 text-slate-200",
-                !active && !completed && "border-white/8 bg-[#1d1c19] text-slate-500"
+                !active && completed && "border-white/10 bg-white/6 text-stone-200",
+                !active && !completed && "border-white/8 bg-[#181411] text-stone-500"
               )}
             >
               {step.label}
