@@ -41,6 +41,25 @@ export interface ProgressMessage {
   message: string;
 }
 
+export interface UserProfile {
+  id: number;
+  email: string;
+  credits_remaining: number;
+  created_at: string;
+}
+
+export interface CreditHistoryItem {
+  id: number;
+  delta: number;
+  reason: string;
+  created_at: string;
+}
+
+export interface AuthToken {
+  access_token: string;
+  token_type: string;
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 function getHeaders(token?: string, extra?: HeadersInit): HeadersInit {
@@ -60,7 +79,63 @@ export async function apiFetch<T>(path: string, token?: string, init?: RequestIn
     const detail = await response.text();
     throw new Error(detail || `Request failed with ${response.status}`);
   }
+  if (response.status === 204) {
+    return undefined as T;
+  }
   return response.json() as Promise<T>;
+}
+
+export async function loginUser(email: string, password: string): Promise<AuthToken> {
+  const body = new URLSearchParams();
+  body.set("username", email);
+  body.set("password", password);
+
+  const response = await fetch(`${API_URL}/auth/token`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body
+  });
+
+  if (!response.ok) {
+    throw new Error((await response.text()) || "Unable to sign in");
+  }
+
+  return response.json() as Promise<AuthToken>;
+}
+
+export async function registerUser(email: string, password: string): Promise<UserProfile> {
+  return apiFetch<UserProfile>("/auth/register", undefined, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email, password })
+  });
+}
+
+export async function updateProfile(email: string, token: string): Promise<UserProfile> {
+  return apiFetch<UserProfile>("/auth/me", token, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email })
+  });
+}
+
+export async function changePassword(currentPassword: string, nextPassword: string, token: string): Promise<void> {
+  await apiFetch("/auth/change-password", token, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      current_password: currentPassword,
+      new_password: nextPassword
+    })
+  });
 }
 
 export function uploadVideo(
