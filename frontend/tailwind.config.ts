@@ -24,8 +24,8 @@ const config: Config = {
           "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))"
       },
       fontFamily: {
-        display: ["var(--font-space-grotesk)"],
-        body: ["var(--font-source-sans)"]
+        display: ["Inter", "sans-serif"],
+        body: ["Inter", "sans-serif"]
       },
       boxShadow: {
         panel: "0 22px 60px rgba(0, 0, 0, 0.32)"
