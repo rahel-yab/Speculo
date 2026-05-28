@@ -8,6 +8,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { lusitana } from "@/app/ui/fonts";
 import { loginUser, registerUser } from "@/lib/api";
 import { readToken, writeToken } from "@/lib/session";
 
@@ -57,63 +58,56 @@ export default function AuthPage() {
   }
 
   return (
-    <main className="grid gap-6 rounded-[32px] border border-white/8 bg-[#17120f]/95 px-5 py-5 shadow-panel lg:grid-cols-[1.05fr_0.95fr] lg:px-6 lg:py-6">
-      <section className="overflow-hidden rounded-[28px] border border-white/8 bg-[radial-gradient(circle_at_top_left,_rgba(247,197,123,0.24),_transparent_32%),linear-gradient(180deg,_#221814_0%,_#17120f_100%)] p-8 text-[#f6ead8]">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm uppercase tracking-[0.22em] text-[#e8c89a]">
+    <main className="grid min-h-[calc(100vh-1.5rem)] gap-6 rounded-[32px] border border-[#e1dbd0] bg-[#f6f2eb] px-5 py-5 text-[#1f1a17] shadow-[0_30px_90px_rgba(23,18,13,0.08)] lg:grid-cols-[0.95fr_1.05fr] lg:px-6 lg:py-6">
+      <section className="overflow-hidden rounded-[28px] border border-[#e1dbd0] bg-[radial-gradient(circle_at_top_left,_rgba(206,178,141,0.22),_transparent_35%),linear-gradient(180deg,_#fbf8f2_0%,_#f3ede3_100%)] p-8">
+        <div className="inline-flex items-center gap-2 rounded-full border border-[#d9d1c2] bg-white/70 px-4 py-2 text-sm uppercase tracking-[0.22em] text-[#7b6757]">
           <Sparkles className="h-4 w-4" />
-          User workspace
+          Speculo
         </div>
-        <h1 className="mt-8 max-w-[10ch] font-display text-5xl font-bold leading-[0.95]">
-          Video intelligence for real teams.
+        <h1 className="mt-8 max-w-[10ch] font-display text-5xl font-semibold leading-[0.95] text-[#18120f]">
+          {mode === "login" ? "Sign in to your workspace." : "Create your workspace."}
         </h1>
-        <p className="mt-5 max-w-xl text-lg leading-8 text-stone-300">
-          Sign in to upload, transcribe, search, ask questions, and manage your workspace from one place.
+        <p className={`${lusitana.className} mt-5 max-w-xl text-lg leading-8 text-[#5d534a]`}>
+          {mode === "login"
+            ? "Access uploads, search, and Q&A from a quiet interface that stays focused on the work."
+            : "Create your account to start uploading, searching, and asking questions in a calm, organized space."}
         </p>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-[24px] border border-white/10 bg-black/15 p-5">
-            <div className="text-sm uppercase tracking-[0.2em] text-stone-400">Included</div>
-            <div className="mt-3 text-2xl font-semibold text-white">Profile management</div>
-            <p className="mt-2 text-sm leading-7 text-stone-300">Update your account, track credits, and keep recent uploads close at hand.</p>
-          </div>
-          <div className="rounded-[24px] border border-white/10 bg-black/15 p-5">
-            <div className="text-sm uppercase tracking-[0.2em] text-stone-400">Workflow</div>
-            <div className="mt-3 text-2xl font-semibold text-white">Searchable video library</div>
-            <p className="mt-2 text-sm leading-7 text-stone-300">From upload to chapters and Q&A, each video lives in a usable workspace instead of a demo screen.</p>
-          </div>
+        <div className="mt-10 rounded-[24px] border border-[#ddd5c6] bg-white/75 p-5 text-sm leading-7 text-[#564b41] shadow-[0_10px_24px_rgba(23,18,13,0.04)]">
+          Speculo keeps the interface quiet so the content stays front and center.
         </div>
       </section>
 
-      <Card className="border-white/8 bg-[#f3eadc] text-[#211814] shadow-[0_25px_70px_rgba(0,0,0,0.18)]">
+      <Card className="border-[#e1dbd0] bg-white text-[#1f1a17] shadow-[0_24px_70px_rgba(23,18,13,0.08)]">
         <CardContent className="p-8">
-          <div className="flex rounded-full bg-[#e7dbc8] p-1 text-sm font-semibold">
+          <div className="mt-8">
+            <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#18120f] text-[#f0b167]">
+              <LockKeyhole className="h-6 w-6" />
+            </div>
+            <h2 className="mt-5 font-display text-3xl font-semibold">
+              {mode === "login" ? "Welcome back" : "Set up your account"}
+            </h2>
+            <p className="mt-2 text-sm text-[#64584c]">
+              {mode === "login"
+                ? "Use your email and password to access your library."
+                : "Create an account and you’ll be taken straight into Speculo."}
+            </p>
+          </div>
+
+          <div className="mt-6 grid rounded-full bg-[#f2ece2] p-1 text-sm font-medium">
             <button
               type="button"
               onClick={() => setMode("login")}
-              className={`flex-1 rounded-full px-4 py-3 transition ${mode === "login" ? "bg-[#201611] text-[#f7ecde]" : "text-[#6b5644]"}`}
+              className={`rounded-full px-4 py-3 transition ${mode === "login" ? "bg-[#18120f] text-white" : "text-[#66584a]"}`}
             >
               Sign in
             </button>
             <button
               type="button"
               onClick={() => setMode("register")}
-              className={`flex-1 rounded-full px-4 py-3 transition ${mode === "register" ? "bg-[#201611] text-[#f7ecde]" : "text-[#6b5644]"}`}
+              className={`rounded-full px-4 py-3 transition ${mode === "register" ? "bg-[#18120f] text-white" : "text-[#66584a]"}`}
             >
-              Create account
+              Sign up
             </button>
-          </div>
-
-          <div className="mt-8">
-            <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#201611] text-[#f0b167]">
-              <LockKeyhole className="h-6 w-6" />
-            </div>
-            <h2 className="mt-5 font-display text-3xl font-bold">
-              {mode === "login" ? "Welcome back" : "Set up your account"}
-            </h2>
-            <p className="mt-2 text-sm text-[#6b5644]">
-              {mode === "login"
-                ? "Use your email and password to access your library."
-                : "Create an account and we’ll sign you in right away."}
-            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -122,7 +116,7 @@ export default function AuthPage() {
               placeholder="Work email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="h-14 border-[#d7c7b2] bg-white text-[#211814] placeholder:text-[#8d7763]"
+              className="h-14 border-[#d7d0c4] bg-[#fcfbf8] text-[#211814] placeholder:text-[#8d7763]"
               required
             />
             <Input
@@ -130,7 +124,7 @@ export default function AuthPage() {
               placeholder="Password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="h-14 border-[#d7c7b2] bg-white text-[#211814] placeholder:text-[#8d7763]"
+              className="h-14 border-[#d7d0c4] bg-[#fcfbf8] text-[#211814] placeholder:text-[#8d7763]"
               required
             />
             {mode === "register" ? (
@@ -139,23 +133,23 @@ export default function AuthPage() {
                 placeholder="Confirm password"
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
-                className="h-14 border-[#d7c7b2] bg-white text-[#211814] placeholder:text-[#8d7763]"
+                className="h-14 border-[#d7d0c4] bg-[#fcfbf8] text-[#211814] placeholder:text-[#8d7763]"
                 required
               />
             ) : null}
-            {error ? <div className="rounded-2xl border border-[#d89586] bg-[#f8ded7] p-4 text-sm text-[#7a2415]">{error}</div> : null}
+            {error ? <div className="rounded-2xl border border-[#e4b0a5] bg-[#fae8e4] p-4 text-sm text-[#8c2e1d]">{error}</div> : null}
             <Button type="submit" disabled={busy} className="h-14 w-full rounded-full text-base">
               {busy ? "Please wait..." : mode === "login" ? "Sign in" : "Create account"}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </form>
 
-          <p className="mt-6 text-sm text-[#6b5644]">
-            By continuing you’ll land in your library, where uploads, profile settings, and search are tied to your account.
+          <p className="mt-6 text-sm text-[#64584c]">
+            {mode === "login" ? "Need an account? " : "Already have an account? "}
+            <Link href={mode === "login" ? "/auth?mode=register" : "/auth"} className="font-semibold text-[#18120f] underline underline-offset-4">
+              {mode === "login" ? "Create one" : "Sign in"}
+            </Link>
           </p>
-          <Link href="/" className="mt-3 inline-block text-sm font-semibold text-[#201611] underline underline-offset-4">
-            Back to library
-          </Link>
         </CardContent>
       </Card>
     </main>

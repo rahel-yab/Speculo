@@ -1,15 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, LayoutGrid, LoaderCircle, Plus, SearchIcon, Sparkles, Video } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowRight, ChevronRight, LayoutGrid, LoaderCircle, Plus, SearchIcon, Sparkles, Video } from "lucide-react";
+import { FormEvent, useEffect, useState } from "react";
 
 import { SearchBar } from "@/components/SearchBar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { apiFetch, type SearchResult, type UserProfile, type VideoListItem } from "@/lib/api";
-import { readToken } from "@/lib/session";
+import { lusitana } from "@/app/ui/fonts";
+import { apiFetch, loginUser, registerUser, type SearchResult, type UserProfile, type VideoListItem } from "@/lib/api";
+import { readToken, writeToken } from "@/lib/session";
 import { formatDuration } from "@/lib/utils";
 
 function formatDate(value: string) {
@@ -19,12 +21,39 @@ function formatDate(value: string) {
 }
 
 export default function LibraryPage() {
+  const router = useRouter();
+  const [activeStory, setActiveStory] = useState<"search" | "upload" | "qa">("search");
   const [token, setToken] = useState("");
   const [user, setUser] = useState<UserProfile | null>(null);
   const [videos, setVideos] = useState<VideoListItem[]>([]);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupBusy, setSignupBusy] = useState(false);
+  const [signupError, setSignupError] = useState<string | null>(null);
+
+  const stories = {
+    search: {
+      label: "Search",
+      title: "Ask a question and jump straight to the right moment.",
+      text: "Speculo keeps transcripts, timestamps, and answers together so you can move from idea to exact clip without digging.",
+      bullets: ["Transcript matches", "Timestamp jumps", "Answer snippets"]
+    },
+    upload: {
+      label: "Upload",
+      title: "Drop in a file and let the workspace do the rest.",
+      text: "Uploads flow into one clean library with status, summary, and chapters so nothing feels hidden.",
+      bullets: ["Simple upload flow", "Clear processing status", "Auto-organized library"]
+    },
+    qa: {
+      label: "Q&A",
+      title: "Turn long videos into something you can actually use.",
+      text: "Ask follow-up questions, review the sources, and keep the conversation inside a calm, readable layout.",
+      bullets: ["Follow-up questions", "Readable answers", "Video sources"]
+    }
+  };
 
   useEffect(() => {
     const activeToken = readToken();
@@ -85,54 +114,155 @@ export default function LibraryPage() {
     };
   }
 
+  async function handleSignup(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSignupError(null);
+    setSignupBusy(true);
+
+    try {
+      await registerUser(signupEmail, signupPassword);
+      const tokenResponse = await loginUser(signupEmail, signupPassword);
+      writeToken(tokenResponse.access_token);
+      router.push("/");
+    } catch (err) {
+      setSignupError(err instanceof Error ? err.message : "Unable to create account");
+    } finally {
+      setSignupBusy(false);
+    }
+  }
+
   if (!token) {
+    const story = stories[activeStory];
+
     return (
-      <main className="grid gap-6 rounded-[32px] border border-white/8 bg-[#17120f]/95 px-5 py-5 shadow-panel lg:grid-cols-[1.15fr_0.85fr] lg:px-6">
-        <section className="rounded-[28px] border border-white/8 bg-[radial-gradient(circle_at_top_left,_rgba(240,177,103,0.2),_transparent_36%),linear-gradient(180deg,_#1f1712_0%,_#16110e_100%)] p-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.24em] text-[#f0c890]">
-            <Sparkles className="h-4 w-4" />
-            Full workspace
+      <main className="space-y-8 rounded-[32px] border border-[#e3ddd1] bg-[#f7f3eb] px-5 py-5 text-[#1f1a17] shadow-[0_30px_90px_rgba(23,18,13,0.08)] lg:px-6">
+        <section className="grid gap-6 rounded-[28px] border border-[#e1dbd0] bg-[radial-gradient(circle_at_top_left,_rgba(214,193,163,0.36),_transparent_32%),linear-gradient(180deg,_#fffaf4_0%,_#f2eadf_100%)] p-7 lg:grid-cols-[1.08fr_0.92fr] lg:p-8">
+          <div className="flex flex-col justify-between gap-8">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#d9d1c2] bg-white/75 px-4 py-2 text-xs uppercase tracking-[0.26em] text-[#7b6757]">
+                <Sparkles className="h-4 w-4" />
+                Speculo
+              </div>
+              <div className="max-w-2xl space-y-5">
+                <h1 className="max-w-[12ch] font-display text-5xl font-semibold leading-[0.92] text-[#18120f] lg:text-6xl">
+                  Clean video knowledge, without the clutter.
+                </h1>
+                <p className={`${lusitana.className} max-w-xl text-lg leading-8 text-[#5d534a]`}>
+                  A simple workspace for uploading, searching, and asking questions about video content. Built to feel calm, readable, and quick to understand.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/auth?mode=register">
+                  <Button className="h-12 rounded-full px-6 text-base">
+                    Sign up
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/auth">
+                  <Button variant="secondary" className="h-12 rounded-full px-6 text-base">
+                    Sign in
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                { label: "Fast search", value: "Find exact moments" },
+                { label: "Clear library", value: "See uploads at a glance" },
+                { label: "Account aware", value: "Keep everything personal" }
+              ].map((item) => (
+                <div key={item.label} className="rounded-2xl border border-[#ddd5c6] bg-white/78 p-4 shadow-[0_10px_24px_rgba(23,18,13,0.04)]">
+                  <div className="text-xs uppercase tracking-[0.22em] text-[#8a7664]">{item.label}</div>
+                  <div className="mt-2 text-sm font-medium text-[#2f281f]">{item.value}</div>
+                </div>
+              ))}
+            </div>
           </div>
-          <h1 className="mt-8 max-w-[12ch] font-display text-5xl font-bold leading-[0.94] text-[#f8ead6]">
-            Upload, search, and manage every video account-side.
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-stone-300">
-            This is now structured as a user product, not just an uploader. Sign in to manage your profile, keep a private library, and work through transcripts and answers in one flow.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Link href="/auth">
+
+          <Card className="overflow-hidden border-[#e1dbd0] bg-white text-[#1f1a17] shadow-[0_24px_70px_rgba(23,18,13,0.08)]">
+            <CardContent className="p-6 sm:p-7">
+              <div className="flex flex-wrap gap-2 rounded-full bg-[#f2ece2] p-1">
+                {(Object.keys(stories) as Array<keyof typeof stories>).map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setActiveStory(key)}
+                    className={`flex-1 rounded-full px-4 py-2 text-sm font-medium transition ${
+                      activeStory === key ? "bg-[#18120f] text-white shadow-sm" : "text-[#66584a] hover:bg-white"
+                    }`}
+                  >
+                    {stories[key].label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-6 rounded-[24px] border border-[#e8dfd1] bg-[#fcfaf6] p-5">
+                <div className="text-sm uppercase tracking-[0.24em] text-[#8a7664]">Interactive preview</div>
+                <h2 className="mt-3 max-w-md font-display text-3xl font-semibold leading-tight text-[#18120f]">
+                  {story.title}
+                </h2>
+                <p className={`${lusitana.className} mt-4 text-[1.02rem] leading-8 text-[#5d534a]`}>
+                  {story.text}
+                </p>
+                <div className="mt-6 grid gap-3">
+                  {story.bullets.map((bullet) => (
+                    <div key={bullet} className="flex items-center gap-3 rounded-2xl border border-[#e3dbcf] bg-white px-4 py-3 text-sm font-medium text-[#30271f]">
+                      <ChevronRight className="h-4 w-4 text-[#9b7f59]" />
+                      {bullet}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section className="grid gap-4 lg:grid-cols-3">
+          {[
+            {
+              title: "Readable by default",
+              text: "Soft contrast, clear spacing, and restrained color keep the interface simple to scan."
+            },
+            {
+              title: "Built for action",
+              text: "The landing page stays interactive, so visitors can explore the product without feeling lost."
+            },
+            {
+              title: "One obvious next step",
+              text: "The footer and hero both lead to the same signup and sign-in flow, so users never wonder where to go."
+            }
+          ].map((item) => (
+            <Card key={item.title} className="border-[#e1dbd0] bg-white text-[#1f1a17] shadow-[0_18px_46px_rgba(23,18,13,0.06)]">
+              <CardContent className="p-6">
+                <h2 className="font-display text-2xl font-semibold text-[#18120f]">{item.title}</h2>
+                <p className={`${lusitana.className} mt-3 text-[1rem] leading-7 text-[#5d534a]`}>{item.text}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </section>
+
+        <footer className="flex flex-col gap-5 rounded-[28px] border border-[#e1dbd0] bg-white px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-xs uppercase tracking-[0.26em] text-[#8a7664]">Get started</div>
+            <p className={`${lusitana.className} mt-2 max-w-xl text-[1.02rem] leading-7 text-[#5d534a]`}>
+              Sign up to create your workspace or sign in if you already have an account.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/auth?mode=register">
               <Button className="h-12 rounded-full px-6 text-base">
-                Sign in
+                Sign up
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link href="/auth?mode=register">
+            <Link href="/auth">
               <Button variant="secondary" className="h-12 rounded-full px-6 text-base">
-                Create account
+                Sign in
               </Button>
             </Link>
           </div>
-        </section>
-
-        <Card className="border-white/8 bg-[#f2e8da] text-[#211814]">
-          <CardContent className="space-y-5 p-8">
-            <h2 className="font-display text-3xl font-bold">What changed</h2>
-            <div className="grid gap-4">
-              <div className="rounded-[24px] border border-[#dbcab6] bg-white/80 p-5">
-                <div className="font-semibold">Real account flow</div>
-                <p className="mt-2 text-sm leading-7 text-[#6f5947]">Users can now sign in, open a profile page, update email, and change password.</p>
-              </div>
-              <div className="rounded-[24px] border border-[#dbcab6] bg-white/80 p-5">
-                <div className="font-semibold">Private workspace</div>
-                <p className="mt-2 text-sm leading-7 text-[#6f5947]">Credits, uploads, recent activity, search, and profile management are tied together.</p>
-              </div>
-              <div className="rounded-[24px] border border-[#dbcab6] bg-white/80 p-5">
-                <div className="font-semibold">Cleaner interface</div>
-                <p className="mt-2 text-sm leading-7 text-[#6f5947]">The library and upload screens now use a warmer, more editorial visual system instead of a generic AI dashboard look.</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        </footer>
       </main>
     );
   }

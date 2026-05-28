@@ -75,32 +75,34 @@ export function AppChrome() {
       <div className="flex flex-col gap-5 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
           <Link href="/" className="font-display text-[2rem] font-bold tracking-tight text-[#f6e6d0]">
-            Northstar
+            Speculo
           </Link>
-          <nav className="flex flex-wrap items-center gap-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active =
-                item.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(item.href);
-              return (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className={cn(
-                    "inline-flex items-center gap-3 rounded-full border px-4 py-2.5 text-[0.98rem] font-medium transition",
-                    active
-                      ? "border-[#f0b167]/30 bg-[#f0b167]/12 text-[#fff3df]"
-                      : "border-white/10 bg-transparent text-stone-300 hover:border-white/20 hover:bg-white/5 hover:text-white"
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
+          {user ? (
+            <nav className="flex flex-wrap items-center gap-2">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active =
+                  item.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className={cn(
+                      "inline-flex items-center gap-3 rounded-full border px-4 py-2.5 text-[0.98rem] font-medium transition",
+                      active
+                        ? "border-[#f0b167]/30 bg-[#f0b167]/12 text-[#fff3df]"
+                        : "border-white/10 bg-transparent text-stone-300 hover:border-white/20 hover:bg-white/5 hover:text-white"
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          ) : null}
         </div>
         <div className="flex flex-wrap items-center gap-3 self-start lg:self-auto">
           {user ? (
